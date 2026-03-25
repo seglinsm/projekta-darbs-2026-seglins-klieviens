@@ -1,0 +1,11 @@
+Var 1 :
+Lokālas Python lietotnes izstrāde failu šifrēšanai un atšifrēšanai ar grafisko lietotāja saskarni
+
+Vēl citi variant - 
+
+
+)Failu drošības nodrošināšana ar lokālu Python lietotni
+)Failu šifrēšanas un atšifrēšanas risinājuma izstrāde Python vidē
+)Datu aizsardzības risinājums: lokāla failu šifrēšanas lietotne Python valodā
+)Grafiskas Python lietotnes izstrāde drošai failu šifrēšanai
+)Simetriskās šifrēšanas izmantošana failu aizsardzībai Python lietotnē
