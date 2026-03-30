@@ -124,8 +124,8 @@
 ### Sagaidāmais rezultāts
 
 - Lietotne parāda jautājumu par pārrakstīšanu.
-- Ja izvēlas `No`, darbība tiek atcelta.
-- Ja izvēlas `Yes`, gala fails tiek pārrakstīts.
+- Ja pārrakstīšanu neapstiprina, darbība tiek atcelta.
+- Ja pārrakstīšanu apstiprina, gala fails tiek pārrakstīts.
 
 ### Faktiskais rezultāts
 

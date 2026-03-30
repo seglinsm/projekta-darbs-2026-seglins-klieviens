@@ -52,7 +52,7 @@ Pilna manuālā pārbaude ar reāliem failiem vēl ir jāveic pašam lietotājam
 | `.pdf` fails | Izvēlēties nelielu PDF failu un atkārtot šifrēšanu/atšifrēšanu | Rodas `.encrypted` un `.decrypted.pdf` faili; atšifrētais PDF atveras korekti | Jāpārbauda manuāli |
 | `.png` / `.jpg` fails | Izvēlēties attēlu un atkārtot to pašu plūsmu | Rodas `.encrypted` un `.decrypted.png` vai `.decrypted.jpg`; atšifrētais attēls atveras korekti | Jāpārbauda manuāli |
 | Nepareiza atslēga | Mēģināt atšifrēt ar citu atslēgu nekā šifrēšanā izmantotā | Atšifrēšana neizdodas, GUI rāda kļūdu, sākotnējais saturs netiek korekti atjaunots | Jāpārbauda manuāli |
-| Pārrakstīšanas gadījums | Veikt to pašu darbību vēlreiz, kad gala fails jau eksistē | GUI prasa apstiprinājumu par pārrakstīšanu; bez apstiprinājuma fails netiek pārrakstīts | Jāpārbauda manuāli |
+| Pārrakstīšanas gadījums | Veikt to pašu darbību vēlreiz, kad gala fails jau eksistē | GUI prasa apstiprinājumu par pārrakstīšanu; ja pārrakstīšanu neapstiprina, fails netiek pārrakstīts | Jāpārbauda manuāli |
 | Atslēgas saglabāšana un ielāde pēc lietotnes aizvēršanas | Saglabāt atslēgu, aizvērt lietotni, atvērt to vēlreiz un ielādēt atslēgas failu | Ielādētā atslēga joprojām der iepriekš šifrētā faila atšifrēšanai | Jāpārbauda manuāli |
 
 ## Secinājums
