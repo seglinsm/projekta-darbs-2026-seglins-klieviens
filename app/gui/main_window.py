@@ -305,29 +305,42 @@ class MainWindow:
 
         self.selected_file_path = self._get_file_path_from_entry()
         key, key_file_path = self._get_key_data_for_request()
+
+        if not self.selected_file_path:
+            self.show_status("Vispirms izvēlies failu.", is_error=True)
+            messagebox.showwarning("Nav izvēlēts fails", "Vispirms izvēlies failu.")
+            return None
+
+        if key is None and not key_file_path:
+            self.show_status("Vispirms ģenerē vai ielādē atslēgu.", is_error=True)
+            messagebox.showwarning(
+                "Nav atslēgas",
+                "Vispirms ģenerē vai ielādē atslēgu.",
+            )
+            return None
+
         output_path = None
         overwrite_existing = False
 
-        if self.selected_file_path:
-            output_path = self.controller.build_output_path(self.selected_file_path, operation)
-            if Path(output_path).exists():
-                should_overwrite = messagebox.askyesno(
-                    "Fails jau eksistē",
-                    (
-                        "Gala fails jau eksistē:\n"
-                        f"{output_path}\n\n"
-                        "Vai vēlies to pārrakstīt?"
-                    ),
+        output_path = self.controller.build_output_path(self.selected_file_path, operation)
+        if Path(output_path).exists():
+            should_overwrite = messagebox.askyesno(
+                "Fails jau eksistē",
+                (
+                    "Gala fails jau eksistē:\n"
+                    f"{output_path}\n\n"
+                    "Vai vēlies to pārrakstīt?"
+                ),
+            )
+            if not should_overwrite:
+                self.show_status(
+                    "Darbība atcelta, jo gala fails jau eksistē.",
+                    is_error=True,
                 )
-                if not should_overwrite:
-                    self.show_status(
-                        "Darbība atcelta, jo gala fails jau eksistē.",
-                        is_error=True,
-                    )
-                    return None
+                return None
 
-                overwrite_existing = True
-                self.show_status("Esošais gala fails tiks pārrakstīts.")
+            overwrite_existing = True
+            self.show_status("Esošais gala fails tiks pārrakstīts.")
 
         return OperationRequest(
             source_file_path=self.selected_file_path or "",

@@ -50,3 +50,7 @@ Lietotne strādā ar faila baitiem, tāpēc tā nav ierobežota tikai ar teksta 
 - Nav paroles režīma vai vairāku lietotāju sistēmas.
 - Nav automātiskas mapju šifrēšanas.
 - Interfeiss ir apzināti vienkāršs un paredzēts skolas projekta līmenim.
+
+## Ko vēl vajag pārbaudīt manuāli
+
+Pirms gala iesniegšanas ieteicams aizpildīt manuālo testu rezultātus failā `docs/manual_test_results_template.md`. Īpaši vajag pārbaudīt darbu ar `.txt`, `.pdf`, `.png/.jpg`, nepareizu atslēgu, pārrakstīšanas gadījumu un atslēgas ielādi pēc lietotnes aizvēršanas.

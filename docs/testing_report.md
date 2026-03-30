@@ -44,7 +44,7 @@ Automatizētie scenāriji:
 
 ## Manuālā testēšana
 
-Pilna manuālā pārbaude ar reāliem failiem vēl ir jāveic pašam lietotājam. Zemāk ir sagatavots saraksts, ko pārbaudīt un ko sagaidīt.
+Pilna manuālā pārbaude ar reāliem failiem vēl ir jāveic pašam lietotājam. Zemāk ir sagatavots saraksts, ko pārbaudīt un ko sagaidīt. Manuālo rezultātu fiksēšanai var izmantot failu `docs/manual_test_results_template.md`.
 
 | Tests | Ko darīt | Sagaidāmais rezultāts | Statuss |
 | --- | --- | --- | --- |
@@ -53,6 +53,7 @@ Pilna manuālā pārbaude ar reāliem failiem vēl ir jāveic pašam lietotājam
 | `.png` / `.jpg` fails | Izvēlēties attēlu un atkārtot to pašu plūsmu | Rodas `.encrypted` un `.decrypted.png` vai `.decrypted.jpg`; atšifrētais attēls atveras korekti | Jāpārbauda manuāli |
 | Nepareiza atslēga | Mēģināt atšifrēt ar citu atslēgu nekā šifrēšanā izmantotā | Atšifrēšana neizdodas, GUI rāda kļūdu, sākotnējais saturs netiek korekti atjaunots | Jāpārbauda manuāli |
 | Pārrakstīšanas gadījums | Veikt to pašu darbību vēlreiz, kad gala fails jau eksistē | GUI prasa apstiprinājumu par pārrakstīšanu; bez apstiprinājuma fails netiek pārrakstīts | Jāpārbauda manuāli |
+| Atslēgas saglabāšana un ielāde pēc lietotnes aizvēršanas | Saglabāt atslēgu, aizvērt lietotni, atvērt to vēlreiz un ielādēt atslēgas failu | Ielādētā atslēga joprojām der iepriekš šifrētā faila atšifrēšanai | Jāpārbauda manuāli |
 
 ## Secinājums
 

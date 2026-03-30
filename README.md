@@ -35,6 +35,19 @@ Palaid testus ar komandu:
 
 `python -m pytest -q`
 
+## Ko vēl jāpārbauda manuāli
+
+Pirms gala iesniegšanas vēl vajag pārbaudīt lietotni ar reāliem failiem:
+
+- `.txt`
+- `.pdf`
+- `.png` vai `.jpg`
+- nepareiza atslēga
+- pārrakstīšanas gadījums
+- atslēgas saglabāšana un ielāde pēc lietotnes aizvēršanas
+
+Rezultātus var aizpildīt failā `docs/manual_test_results_template.md`.
+
 ## Ko lietotne dara
 
 - ļauj izvēlēties vienu failu no datora;
