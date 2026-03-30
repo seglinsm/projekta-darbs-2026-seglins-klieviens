@@ -5,6 +5,8 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
+from app.utils.exceptions import FileAccessError, ValidationError
+
 
 class FileService:
     """Nodrošina failu nolasīšanu, saglabāšanu un ceļu apstrādi."""
@@ -20,13 +22,16 @@ class FileService:
         """
 
         if not path.strip():
-            raise ValueError("Faila ceļš nedrīkst būt tukšs.")
+            raise ValidationError("Faila ceļš nedrīkst būt tukšs.")
 
         file_path = Path(path)
         if not file_path.is_file():
-            raise FileNotFoundError("Fails nav atrasts.")
+            raise FileAccessError("Fails nav atrasts.")
 
-        return file_path.read_bytes()
+        try:
+            return file_path.read_bytes()
+        except OSError as exc:
+            raise FileAccessError("Failu neizdevās nolasīt.") from exc
 
     def write_bytes(self, path: str, data: bytes) -> Path:
         """Saglabā datus failā binārā veidā.
@@ -40,11 +45,14 @@ class FileService:
         """
 
         if not path.strip():
-            raise ValueError("Faila ceļš nedrīkst būt tukšs.")
+            raise ValidationError("Faila ceļš nedrīkst būt tukšs.")
 
         file_path = Path(path)
-        file_path.parent.mkdir(parents=True, exist_ok=True)
-        file_path.write_bytes(data)
+        try:
+            file_path.parent.mkdir(parents=True, exist_ok=True)
+            file_path.write_bytes(data)
+        except OSError as exc:
+            raise FileAccessError("Failu neizdevās saglabāt.") from exc
         return file_path
 
     def file_exists(self, path: str) -> bool:
@@ -107,7 +115,7 @@ class FileService:
         """
 
         if not original_path.strip():
-            raise ValueError("Sākotnējais ceļš nedrīkst būt tukšs.")
+            raise ValidationError("Sākotnējais ceļš nedrīkst būt tukšs.")
 
         return str(Path(original_path).with_suffix(".encrypted"))
 
@@ -122,7 +130,7 @@ class FileService:
         """
 
         if not original_path.strip():
-            raise ValueError("Sākotnējais ceļš nedrīkst būt tukšs.")
+            raise ValidationError("Sākotnējais ceļš nedrīkst būt tukšs.")
 
         return str(Path(original_path).with_suffix(".decrypted"))
 
@@ -137,13 +145,16 @@ class FileService:
         """
 
         if not path.strip():
-            raise ValueError("Faila ceļš nedrīkst būt tukšs.")
+            raise ValidationError("Faila ceļš nedrīkst būt tukšs.")
 
         file_path = Path(path)
         if not file_path.is_file():
-            raise FileNotFoundError("Fails nav atrasts.")
+            raise FileAccessError("Fails nav atrasts.")
 
-        return file_path.stat().st_size
+        try:
+            return file_path.stat().st_size
+        except OSError as exc:
+            raise FileAccessError("Faila izmēru neizdevās noteikt.") from exc
 
     def safe_overwrite_check(self, path: str) -> bool:
         """Pārbauda, vai gala failu drīkst droši pārrakstīt.

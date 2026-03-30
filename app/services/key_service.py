@@ -6,6 +6,8 @@ from pathlib import Path
 
 from cryptography.fernet import Fernet
 
+from app.utils.exceptions import FileAccessError, KeyErrorInvalid, ValidationError
+
 
 class KeyService:
     """Atbild par šifrēšanas atslēgu ģenerēšanu un glabāšanu."""
@@ -31,12 +33,15 @@ class KeyService:
         """
 
         if not path.strip():
-            raise ValueError("Atslēgas faila ceļš nedrīkst būt tukšs.")
+            raise ValidationError("Atslēgas faila ceļš nedrīkst būt tukšs.")
 
         key_text = self.export_key_as_text(key)
         key_path = Path(path)
-        key_path.parent.mkdir(parents=True, exist_ok=True)
-        key_path.write_text(key_text, encoding="utf-8")
+        try:
+            key_path.parent.mkdir(parents=True, exist_ok=True)
+            key_path.write_text(key_text, encoding="utf-8")
+        except OSError as exc:
+            raise FileAccessError("Atslēgu neizdevās saglabāt failā.") from exc
         return key_path
 
     def load_key(self, path: str) -> bytes:
@@ -50,13 +55,16 @@ class KeyService:
         """
 
         if not path.strip():
-            raise ValueError("Atslēgas faila ceļš nedrīkst būt tukšs.")
+            raise ValidationError("Atslēgas faila ceļš nedrīkst būt tukšs.")
 
         key_path = Path(path)
         if not key_path.is_file():
-            raise FileNotFoundError("Atslēgas fails nav atrasts.")
+            raise FileAccessError("Atslēgas fails nav atrasts.")
 
-        key_text = key_path.read_text(encoding="utf-8").strip()
+        try:
+            key_text = key_path.read_text(encoding="utf-8").strip()
+        except OSError as exc:
+            raise FileAccessError("Atslēgas failu neizdevās nolasīt.") from exc
         return self.import_key_from_text(key_text)
 
     def validate_key_file(self, path: str) -> bool:
@@ -71,7 +79,7 @@ class KeyService:
 
         try:
             self.load_key(path)
-        except (FileNotFoundError, OSError, ValueError):
+        except (FileAccessError, KeyErrorInvalid, ValidationError):
             return False
 
         return True
@@ -91,7 +99,7 @@ class KeyService:
         try:
             return key.decode("utf-8")
         except UnicodeDecodeError as exc:
-            raise ValueError("Atslēgu nevar pārvērst tekstā.") from exc
+            raise KeyErrorInvalid("Atslēgu nevar pārvērst tekstā.") from exc
 
     def import_key_from_text(self, key_text: str) -> bytes:
         """Pārvērš tekstu atslēgas baitu formā.
@@ -105,7 +113,7 @@ class KeyService:
 
         cleaned_key_text = key_text.strip()
         if not cleaned_key_text:
-            raise ValueError("Atslēgas teksts nedrīkst būt tukšs.")
+            raise ValidationError("Atslēgas teksts nedrīkst būt tukšs.")
 
         key_bytes = cleaned_key_text.encode("utf-8")
         self._ensure_valid_key(key_bytes)
@@ -117,4 +125,4 @@ class KeyService:
         try:
             Fernet(key)
         except (TypeError, ValueError) as exc:
-            raise ValueError("Atslēga nav derīga Fernet formātā.") from exc
+            raise KeyErrorInvalid("Atslēga nav derīga Fernet formātā.") from exc

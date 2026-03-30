@@ -2,6 +2,8 @@
 
 from cryptography.fernet import Fernet, InvalidToken
 
+from app.utils.exceptions import EncryptionProcessError, KeyErrorInvalid
+
 
 class CryptoService:
     """Apstrādā failu datu šifrēšanu un atšifrēšanu."""
@@ -17,11 +19,11 @@ class CryptoService:
             Šifrētie dati baitos.
 
         Raises:
-            ValueError: Ja atslēga nav derīga.
+            KeyErrorInvalid: Ja atslēga nav derīga.
         """
 
         if not self.is_valid_key(key):
-            raise ValueError("Nederīga šifrēšanas atslēga.")
+            raise KeyErrorInvalid("Nederīga šifrēšanas atslēga.")
 
         return Fernet(key).encrypt(data)
 
@@ -36,16 +38,17 @@ class CryptoService:
             Atšifrētie dati baitos.
 
         Raises:
-            ValueError: Ja atslēga nav derīga vai atšifrēšana neizdodas.
+            KeyErrorInvalid: Ja atslēga nav derīga.
+            EncryptionProcessError: Ja atšifrēšana neizdodas.
         """
 
         if not self.is_valid_key(key):
-            raise ValueError("Nederīga atšifrēšanas atslēga.")
+            raise KeyErrorInvalid("Nederīga atšifrēšanas atslēga.")
 
         try:
             return Fernet(key).decrypt(data)
         except InvalidToken as exc:
-            raise ValueError(
+            raise EncryptionProcessError(
                 "Atšifrēšana neizdevās. Iespējams, atslēga nav pareiza vai dati ir bojāti."
             ) from exc
 
