@@ -2,11 +2,16 @@
 
 ## Testēšanas mērķis
 
-Pārbaudīt, vai lokālā failu šifrēšanas lietotne darbojas atbilstoši projekta mērķim: spēj lokāli šifrēt un atšifrēt failus, korekti apstrādā atslēgas un skaidri paziņo par kļūdām.
+Pārbaudīt, vai lokālā failu šifrēšanas lietotne darbojas atbilstoši projekta mērķim: spēj lokāli šifrēt un atšifrēt failus, pareizi apstrādā atslēgas, neiznīcina sākotnējos failus bez apstiprinājuma un rāda saprotamus ziņojumus lietotājam.
 
-## Veiktā automatizētā testēšana
+## Automatizētā testēšana
 
-Projektā ir `pytest` testi šādām daļām:
+Pēdējā lokālā automatizētā pārbaude:
+
+- komanda: `python -m pytest -q`
+- rezultāts: `20 passed`
+
+Ar testiem tiek pārbaudīts:
 
 - `CryptoService`
 - `KeyService`
@@ -16,7 +21,7 @@ Projektā ir `pytest` testi šādām daļām:
 - `LogService`
 - `MainWindow` viegls smoke tests
 
-Pārbaudītie scenāriji:
+Automatizētie scenāriji:
 
 - šifrēšanas un atšifrēšanas roundtrip
 - nederīgas atslēgas noraidīšana
@@ -24,44 +29,37 @@ Pārbaudītie scenāriji:
 - faila nolasīšana un saglabāšana
 - gala failu nosaukumu veidošana
 - pieprasījuma validācija
-- kontroliera veiksmīgā šifrēšanas un atšifrēšanas plūsma
+- kontroliera veiksmīga šifrēšana un atšifrēšana
 - kļūda, ja mēģina pārrakstīt gala failu bez atļaujas
-- log faila ierakstu izveide
+- log faila ieraksta izveide
 - GUI pamatloga izveide
 
 ## Kā palaist testus
 
 1. Atver termināli projekta mapē.
-2. Uzinstalē atkarības:
+2. Ja vajag, uzinstalē atkarības:
    `python -m pip install -r requirements.txt`
 3. Palaid testus:
    `python -m pytest -q`
 
-## Manuālā testēšana ar reāliem failiem
+## Manuālā testēšana
 
-Ieteicams pārbaudīt vismaz šādus failus:
+Pilna manuālā pārbaude ar reāliem failiem vēl ir jāveic pašam lietotājam. Zemāk ir sagatavots saraksts, ko pārbaudīt un ko sagaidīt.
 
-- `.txt`
-- `.pdf`
-- `.png` vai `.jpg`
-- kādu citu nelielu bināru failu
+| Tests | Ko darīt | Sagaidāmais rezultāts | Statuss |
+| --- | --- | --- | --- |
+| `.txt` fails | Izvēlēties nelielu teksta failu, ģenerēt vai ielādēt atslēgu, nospiest `Šifrēt`, pēc tam `Atšifrēt` | Rodas `fails.txt.encrypted` un pēc tam `fails.decrypted.txt`; atšifrētais saturs sakrīt ar oriģinālu | Jāpārbauda manuāli |
+| `.pdf` fails | Izvēlēties nelielu PDF failu un atkārtot šifrēšanu/atšifrēšanu | Rodas `.encrypted` un `.decrypted.pdf` faili; atšifrētais PDF atveras korekti | Jāpārbauda manuāli |
+| `.png` / `.jpg` fails | Izvēlēties attēlu un atkārtot to pašu plūsmu | Rodas `.encrypted` un `.decrypted.png` vai `.decrypted.jpg`; atšifrētais attēls atveras korekti | Jāpārbauda manuāli |
+| Nepareiza atslēga | Mēģināt atšifrēt ar citu atslēgu nekā šifrēšanā izmantotā | Atšifrēšana neizdodas, GUI rāda kļūdu, sākotnējais saturs netiek korekti atjaunots | Jāpārbauda manuāli |
+| Pārrakstīšanas gadījums | Veikt to pašu darbību vēlreiz, kad gala fails jau eksistē | GUI prasa apstiprinājumu par pārrakstīšanu; bez apstiprinājuma fails netiek pārrakstīts | Jāpārbauda manuāli |
 
-Katram failam pārbaudi:
+## Secinājums
 
-1. Vai šifrēšana izveido jaunu `.encrypted` failu.
-2. Vai atšifrēšana ar pareizu atslēgu izveido `.decrypted` failu ar pareizu saturu.
-3. Vai atšifrēšana ar nepareizu atslēgu rāda kļūdu.
-4. Vai lietotne neprasa pārrakstīt esošu gala failu bez lietotāja apstiprinājuma.
-
-## Sagaidāmais rezultāts
-
-- Pareiza atslēga ļauj atjaunot sākotnējo saturu.
-- Nepareiza atslēga neļauj atšifrēt failu.
-- Lietotājs saņem skaidrus paziņojumus GUI pusē.
-- Lietotne saglabā OOP dalījumu starp GUI, kontrolieri, servisiem un modeļiem.
+Automatizētie testi rāda, ka kodola loģika un pamatplūsmas strādā. Lai projektu varētu godīgi iesniegt kā pabeigtu gala darbu, vēl ir jāiziet manuālā pārbaude ar īstiem `.txt`, `.pdf` un attēlu failiem.
 
 ## Ierobežojumi
 
-- Pilna GUI automatizētā testēšana nav veikta, jo failu dialogi un lietotāja klikšķi tiek pārbaudīti galvenokārt manuāli.
-- Testi neaptver ļoti lielus failus vai ilgstošas veiktspējas pārbaudes.
-- Projekts ir veidots kā vienkārša lokāla lietotne, nevis pilnvērtīga failu pārvaldības sistēma.
+- Pilna GUI automatizētā testēšana nav veikta, jo failu dialogi un lietotāja klikšķi galvenokārt tiek pārbaudīti manuāli.
+- Testi neaptver ļoti lielus failus un veiktspējas robežgadījumus.
+- Projekts ir apzināti vienkārša lokāla lietotne, nevis pilnvērtīga failu pārvaldības sistēma.
