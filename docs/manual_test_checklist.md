@@ -15,10 +15,10 @@
 3. Nospied `Ģenerēt atslēgu`.
 4. Nospied `Saglabāt atslēgu` un saglabā to `.key` vai `.txt` failā.
 5. Nospied `Šifrēt`.
-6. Pārbaudi, ka tiek izveidots jauns fails ar paplašinājumu `.encrypted`.
+6. Pārbaudi, ka tiek izveidots jauns fails, kuram sākotnējais nosaukums tiek saglabāts un beigās tiek pievienots `.encrypted`.
 7. Nospied `Ielādēt atslēgu` un izvēlies iepriekš saglabāto atslēgas failu.
 8. Nospied `Atšifrēt`.
-9. Pārbaudi, ka tiek izveidots jauns fails ar paplašinājumu `.decrypted`.
+9. Pārbaudi, ka tiek izveidots jauns fails ar `.decrypted` marķieri pirms sākotnējā faila paplašinājuma, piemēram, `attels.decrypted.jpg`.
 
 ## Kādus failus pārbaudīt
 
@@ -33,3 +33,4 @@
 - Lietotnei jāparāda saprotams kļūdas paziņojums.
 - Nevajadzētu iegūt korektu sākotnējo saturu.
 - Esošais šifrētais fails nedrīkst tikt bojāts tikai tāpēc, ka tika izmantota nepareiza atslēga.
+- Ja gala fails jau eksistē, lietotnei jāprasa apstiprinājums par pārrakstīšanu.

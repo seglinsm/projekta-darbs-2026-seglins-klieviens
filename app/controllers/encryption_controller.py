@@ -215,11 +215,11 @@ class EncryptionController:
         """Pārvērš sistēmas kļūdu par saprotamu ziņu lietotājam."""
 
         if isinstance(exc, ValidationError):
-            return "Darbību nevar izpildīt. Pārbaudi ievadītos datus."
+            return str(exc)
         if isinstance(exc, FileAccessError):
-            return "Neizdevās piekļūt failam. Pārbaudi ceļu un faila tiesības."
+            return f"Neizdevās piekļūt failam. {exc}"
         if isinstance(exc, KeyErrorInvalid):
-            return "Atslēga nav derīga. Pārbaudi izvēlēto atslēgu."
+            return f"Atslēga nav derīga. {exc}"
         if isinstance(exc, EncryptionProcessError) and operation == "decrypt":
             return "Atšifrēšana neizdevās. Pārbaudi, vai atslēga ir pareiza un fails nav bojāts."
         if isinstance(exc, EncryptionProcessError):

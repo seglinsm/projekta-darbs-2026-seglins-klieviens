@@ -149,3 +149,31 @@ def test_key_loaded_from_file(tmp_path: Path) -> None:
     assert result.success is True
     assert result.output_path is not None
     assert Path(result.output_path).exists() is True
+
+
+def test_encrypt_file_rejects_overwrite_by_default(tmp_path: Path) -> None:
+    """Pārbauda, vai gala fails pēc noklusējuma netiek pārrakstīts."""
+
+    controller = _build_controller(tmp_path)
+    source_file = tmp_path / "jautajums.txt"
+    source_file.write_bytes(b"Dati bez parslegsanas")
+    key = controller.generate_new_key()
+
+    first_result = controller.encrypt_file(
+        OperationRequest(
+            source_file_path=str(source_file),
+            operation="encrypt",
+            key=key,
+        )
+    )
+    second_result = controller.encrypt_file(
+        OperationRequest(
+            source_file_path=str(source_file),
+            operation="encrypt",
+            key=key,
+        )
+    )
+
+    assert first_result.success is True
+    assert second_result.success is False
+    assert "Gala fails jau eksistē" in second_result.message

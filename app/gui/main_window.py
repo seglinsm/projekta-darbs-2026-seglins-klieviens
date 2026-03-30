@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 from typing import TYPE_CHECKING
@@ -164,7 +165,7 @@ class MainWindow:
         self.selected_file_path = selected_path
         if self.file_path_var is not None:
             self.file_path_var.set(selected_path)
-        self.show_status("Fails izvēlēts veiksmīgi.")
+        self.show_status(f"Izvēlēts fails: {Path(selected_path).name}")
 
     def load_key_file(self) -> None:
         """Atver atslēgas faila izvēles darbību."""
@@ -246,6 +247,8 @@ class MainWindow:
         """Sagatavo pieprasījumu izvēlētā faila šifrēšanai."""
 
         request = self._build_request(operation="encrypt")
+        if request is None:
+            return
         result = self.controller.encrypt_file(request)
         self.show_result(result)
 
@@ -253,6 +256,8 @@ class MainWindow:
         """Sagatavo pieprasījumu izvēlētā faila atšifrēšanai."""
 
         request = self._build_request(operation="decrypt")
+        if request is None:
+            return
         result = self.controller.decrypt_file(request)
         self.show_result(result)
 
@@ -295,17 +300,42 @@ class MainWindow:
         if self.root is not None:
             self.root.mainloop()
 
-    def _build_request(self, operation: str) -> OperationRequest:
+    def _build_request(self, operation: str) -> OperationRequest | None:
         """Izveido pieprasījuma objektu no pašreizējās GUI ievades."""
 
         self.selected_file_path = self._get_file_path_from_entry()
         key, key_file_path = self._get_key_data_for_request()
+        output_path = None
+        overwrite_existing = False
+
+        if self.selected_file_path:
+            output_path = self.controller.build_output_path(self.selected_file_path, operation)
+            if Path(output_path).exists():
+                should_overwrite = messagebox.askyesno(
+                    "Fails jau eksistē",
+                    (
+                        "Gala fails jau eksistē:\n"
+                        f"{output_path}\n\n"
+                        "Vai vēlies to pārrakstīt?"
+                    ),
+                )
+                if not should_overwrite:
+                    self.show_status(
+                        "Darbība atcelta, jo gala fails jau eksistē.",
+                        is_error=True,
+                    )
+                    return None
+
+                overwrite_existing = True
+                self.show_status("Esošais gala fails tiks pārrakstīts.")
 
         return OperationRequest(
             source_file_path=self.selected_file_path or "",
             operation=operation,
             key=key,
             key_file_path=key_file_path,
+            output_file_path=output_path,
+            overwrite_existing=overwrite_existing,
         )
 
     def _get_file_path_from_entry(self) -> str | None:

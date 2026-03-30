@@ -32,7 +32,18 @@ def test_build_encrypted_file_path(tmp_path: Path) -> None:
 
     encrypted_path = service.build_encrypted_file_path(str(original_path))
 
-    assert Path(encrypted_path).name == "dokuments.encrypted"
+    assert Path(encrypted_path).name == "dokuments.txt.encrypted"
+
+
+def test_build_decrypted_file_path_preserves_extension(tmp_path: Path) -> None:
+    """Pārbauda, vai atšifrētam failam tiek saglabāts saprotams paplašinājums."""
+
+    service = FileService()
+    encrypted_path = tmp_path / "attels.jpg.encrypted"
+
+    decrypted_path = service.build_decrypted_file_path(str(encrypted_path))
+
+    assert Path(decrypted_path).name == "attels.decrypted.jpg"
 
 
 def test_safe_overwrite_check_rejects_existing_file(tmp_path: Path) -> None:

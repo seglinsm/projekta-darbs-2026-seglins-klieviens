@@ -117,7 +117,9 @@ class FileService:
         if not original_path.strip():
             raise ValidationError("Sākotnējais ceļš nedrīkst būt tukšs.")
 
-        return str(Path(original_path).with_suffix(".encrypted"))
+        original_file = Path(original_path)
+        encrypted_name = f"{original_file.name}.encrypted"
+        return str(original_file.with_name(encrypted_name))
 
     def build_decrypted_file_path(self, original_path: str) -> str:
         """Izveido gala ceļu atšifrētam failam.
@@ -132,7 +134,16 @@ class FileService:
         if not original_path.strip():
             raise ValidationError("Sākotnējais ceļš nedrīkst būt tukšs.")
 
-        return str(Path(original_path).with_suffix(".decrypted"))
+        original_file = Path(original_path)
+        restored_name = original_file.name.removesuffix(".encrypted")
+        restored_file = Path(restored_name)
+
+        if restored_file.suffix:
+            decrypted_name = f"{restored_file.stem}.decrypted{restored_file.suffix}"
+        else:
+            decrypted_name = f"{restored_file.name}.decrypted"
+
+        return str(original_file.with_name(decrypted_name))
 
     def get_file_size(self, path: str) -> int:
         """Atgriež faila izmēru baitos.
