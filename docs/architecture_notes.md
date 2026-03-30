@@ -4,7 +4,7 @@
 
 Repo ir sadalīts vairākos slāņos, lai katrai daļai būtu sava atbildība. Tas palīdz saglabāt kodu saprotamu un vieglāk testējamu.
 
-## Kur atrodas GUI slānis
+## Kur atrodas GUI slānis?
 
 GUI slānis ir mapē `app/gui/`.
 
