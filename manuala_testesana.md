@@ -1,7 +1,5 @@
 # Manuala testeesana
 
-Šis ir viens vienkāršs fails, kur vari atzīmēt, ko pats esi pārbaudījis pirms nodošanas.
-
 ## Pirms sāc
 
 Sagatavo dažus mazus failus:
