@@ -1,4 +1,6 @@
-"""Kriptogrāfijas servisa skelets."""
+"""Kriptogrāfijas serviss darbam ar Fernet šifrēšanu."""
+
+from cryptography.fernet import Fernet, InvalidToken
 
 
 class CryptoService:
@@ -13,9 +15,15 @@ class CryptoService:
 
         Returns:
             Šifrētie dati baitos.
+
+        Raises:
+            ValueError: Ja atslēga nav derīga.
         """
 
-        raise NotImplementedError("Šifrēšanas loģika vēl nav izveidota.")
+        if not self.is_valid_key(key):
+            raise ValueError("Nederīga šifrēšanas atslēga.")
+
+        return Fernet(key).encrypt(data)
 
     def decrypt_bytes(self, data: bytes, key: bytes) -> bytes:
         """Atšifrē datus ar norādīto atslēgu.
@@ -26,9 +34,20 @@ class CryptoService:
 
         Returns:
             Atšifrētie dati baitos.
+
+        Raises:
+            ValueError: Ja atslēga nav derīga vai atšifrēšana neizdodas.
         """
 
-        raise NotImplementedError("Atšifrēšanas loģika vēl nav izveidota.")
+        if not self.is_valid_key(key):
+            raise ValueError("Nederīga atšifrēšanas atslēga.")
+
+        try:
+            return Fernet(key).decrypt(data)
+        except InvalidToken as exc:
+            raise ValueError(
+                "Atšifrēšana neizdevās. Iespējams, atslēga nav pareiza vai dati ir bojāti."
+            ) from exc
 
     def is_valid_key(self, key: bytes) -> bool:
         """Pārbauda, vai atslēga atbilst paredzētajam formātam.
@@ -40,4 +59,12 @@ class CryptoService:
             `True`, ja atslēga ir derīga, pretējā gadījumā `False`.
         """
 
-        raise NotImplementedError("Atslēgas validācija vēl nav izveidota.")
+        if not key:
+            return False
+
+        try:
+            Fernet(key)
+        except (TypeError, ValueError):
+            return False
+
+        return True

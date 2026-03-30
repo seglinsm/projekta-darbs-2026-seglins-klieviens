@@ -1,21 +1,32 @@
 """CryptoService testu skelets."""
 
+from cryptography.fernet import Fernet
 import pytest
 
 from app.services.crypto_service import CryptoService
 
 
-@pytest.mark.skip(reason="Sākotnējais testa skelets bez implementācijas.")
-def test_encrypt_bytes_returns_encrypted_data() -> None:
-    """Pārbauda, vai serviss spēj sagatavot šifrētu rezultātu."""
+def test_encrypt_decrypt_roundtrip() -> None:
+    """Pārbauda, vai datus var veiksmīgi sašifrēt un atšifrēt."""
 
     service = CryptoService()
-    assert service is not None
+    key = Fernet.generate_key()
+    data = b"Slepeni dati"
+
+    encrypted_data = service.encrypt_bytes(data, key)
+    decrypted_data = service.decrypt_bytes(encrypted_data, key)
+
+    assert encrypted_data != data
+    assert decrypted_data == data
 
 
-@pytest.mark.skip(reason="Sākotnējais testa skelets bez implementācijas.")
-def test_decrypt_bytes_restores_original_data() -> None:
-    """Pārbauda, vai serviss spēj atjaunot sākotnējos datus."""
+def test_invalid_key_rejection() -> None:
+    """Pārbauda, vai nederīga atslēga tiek noraidīta."""
 
     service = CryptoService()
-    assert service is not None
+    invalid_key = b"nederiga-atslega"
+
+    assert service.is_valid_key(invalid_key) is False
+
+    with pytest.raises(ValueError):
+        service.encrypt_bytes(b"dati", invalid_key)

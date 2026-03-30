@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from cryptography.fernet import Fernet
+
 
 class KeyService:
     """Atbild par šifrēšanas atslēgu ģenerēšanu un glabāšanu."""
@@ -15,7 +17,7 @@ class KeyService:
             Jaunā atslēga baitos.
         """
 
-        raise NotImplementedError("Atslēgas ģenerēšana vēl nav izveidota.")
+        return Fernet.generate_key()
 
     def save_key(self, path: str, key: bytes) -> Path:
         """Saglabā atslēgu failā.
@@ -28,7 +30,14 @@ class KeyService:
             Ceļš uz saglabāto atslēgas failu.
         """
 
-        raise NotImplementedError("Atslēgas saglabāšana vēl nav izveidota.")
+        if not path.strip():
+            raise ValueError("Atslēgas faila ceļš nedrīkst būt tukšs.")
+
+        key_text = self.export_key_as_text(key)
+        key_path = Path(path)
+        key_path.parent.mkdir(parents=True, exist_ok=True)
+        key_path.write_text(key_text, encoding="utf-8")
+        return key_path
 
     def load_key(self, path: str) -> bytes:
         """Ielādē atslēgu no faila.
@@ -40,7 +49,15 @@ class KeyService:
             Ielādētā atslēga baitos.
         """
 
-        raise NotImplementedError("Atslēgas ielāde vēl nav izveidota.")
+        if not path.strip():
+            raise ValueError("Atslēgas faila ceļš nedrīkst būt tukšs.")
+
+        key_path = Path(path)
+        if not key_path.is_file():
+            raise FileNotFoundError("Atslēgas fails nav atrasts.")
+
+        key_text = key_path.read_text(encoding="utf-8").strip()
+        return self.import_key_from_text(key_text)
 
     def validate_key_file(self, path: str) -> bool:
         """Pārbauda, vai atslēgas fails satur lietojamu atslēgu.
@@ -52,7 +69,12 @@ class KeyService:
             `True`, ja fails ir derīgs, pretējā gadījumā `False`.
         """
 
-        raise NotImplementedError("Atslēgas faila validācija vēl nav izveidota.")
+        try:
+            self.load_key(path)
+        except (FileNotFoundError, OSError, ValueError):
+            return False
+
+        return True
 
     def export_key_as_text(self, key: bytes) -> str:
         """Pārvērš atslēgu tekstā ērtākai attēlošanai.
@@ -64,7 +86,12 @@ class KeyService:
             Atslēga teksta formā.
         """
 
-        raise NotImplementedError("Atslēgas eksportēšana tekstā vēl nav izveidota.")
+        self._ensure_valid_key(key)
+
+        try:
+            return key.decode("utf-8")
+        except UnicodeDecodeError as exc:
+            raise ValueError("Atslēgu nevar pārvērst tekstā.") from exc
 
     def import_key_from_text(self, key_text: str) -> bytes:
         """Pārvērš tekstu atslēgas baitu formā.
@@ -76,4 +103,18 @@ class KeyService:
             Atslēga baitos.
         """
 
-        raise NotImplementedError("Atslēgas importēšana no teksta vēl nav izveidota.")
+        cleaned_key_text = key_text.strip()
+        if not cleaned_key_text:
+            raise ValueError("Atslēgas teksts nedrīkst būt tukšs.")
+
+        key_bytes = cleaned_key_text.encode("utf-8")
+        self._ensure_valid_key(key_bytes)
+        return key_bytes
+
+    def _ensure_valid_key(self, key: bytes) -> None:
+        """Pārbauda, vai norādītā atslēga ir derīga Fernet atslēga."""
+
+        try:
+            Fernet(key)
+        except (TypeError, ValueError) as exc:
+            raise ValueError("Atslēga nav derīga Fernet formātā.") from exc

@@ -1,6 +1,9 @@
 """Ievades validācijas servisa skelets."""
 
+from pathlib import Path
+
 from app.models.operation_request import OperationRequest
+from app.services.crypto_service import CryptoService
 
 
 class ValidationService:
@@ -13,7 +16,20 @@ class ValidationService:
             request: Lietotāja pieprasījums šifrēšanai vai atšifrēšanai.
         """
 
-        raise NotImplementedError("Pieprasījuma validācija vēl nav izveidota.")
+        if request.operation not in {"encrypt", "decrypt"}:
+            raise ValueError("Darbībai jābūt 'encrypt' vai 'decrypt'.")
+
+        self.validate_file_path(request.source_file_path)
+
+        if request.key is not None:
+            self.validate_key(request.key)
+        elif request.key_file_path:
+            self.validate_file_path(request.key_file_path)
+        else:
+            raise ValueError("Jānorāda atslēga vai atslēgas fails.")
+
+        if request.output_file_path is not None:
+            self.validate_output_path(request.output_file_path)
 
     def validate_file_path(self, path: str) -> None:
         """Pārbauda, vai faila ceļš ir derīgs.
@@ -22,7 +38,14 @@ class ValidationService:
             path: Pārbaudāmais faila ceļš.
         """
 
-        raise NotImplementedError("Faila ceļa validācija vēl nav izveidota.")
+        if not path.strip():
+            raise ValueError("Faila ceļš nedrīkst būt tukšs.")
+
+        file_path = Path(path)
+        if not file_path.exists():
+            raise FileNotFoundError("Fails nav atrasts.")
+        if not file_path.is_file():
+            raise FileNotFoundError("Norādītais ceļš nav fails.")
 
     def validate_key(self, key: bytes) -> None:
         """Pārbauda, vai atslēga ir derīgā formātā.
@@ -31,7 +54,11 @@ class ValidationService:
             key: Pārbaudāmā atslēga baitos.
         """
 
-        raise NotImplementedError("Atslēgas validācija vēl nav izveidota.")
+        if not key:
+            raise ValueError("Atslēga nedrīkst būt tukša.")
+
+        if not CryptoService().is_valid_key(key):
+            raise ValueError("Atslēga nav derīga.")
 
     def validate_output_path(self, path: str) -> None:
         """Pārbauda, vai gala ceļš ir drošs saglabāšanai.
@@ -40,4 +67,11 @@ class ValidationService:
             path: Pārbaudāmais gala faila ceļš.
         """
 
-        raise NotImplementedError("Gala ceļa validācija vēl nav izveidota.")
+        if not path.strip():
+            raise ValueError("Gala faila ceļš nedrīkst būt tukšs.")
+
+        output_path = Path(path)
+        if not output_path.name:
+            raise ValueError("Gala faila ceļš nav derīgs.")
+        if not output_path.parent.exists():
+            raise FileNotFoundError("Gala faila mape nav atrasta.")

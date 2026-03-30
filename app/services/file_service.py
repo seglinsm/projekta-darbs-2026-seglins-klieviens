@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 
@@ -18,7 +19,14 @@ class FileService:
             Faila saturs baitos.
         """
 
-        raise NotImplementedError("Faila nolasīšana vēl nav izveidota.")
+        if not path.strip():
+            raise ValueError("Faila ceļš nedrīkst būt tukšs.")
+
+        file_path = Path(path)
+        if not file_path.is_file():
+            raise FileNotFoundError("Fails nav atrasts.")
+
+        return file_path.read_bytes()
 
     def write_bytes(self, path: str, data: bytes) -> Path:
         """Saglabā datus failā binārā veidā.
@@ -31,7 +39,13 @@ class FileService:
             Ceļš uz saglabāto failu.
         """
 
-        raise NotImplementedError("Faila saglabāšana vēl nav izveidota.")
+        if not path.strip():
+            raise ValueError("Faila ceļš nedrīkst būt tukšs.")
+
+        file_path = Path(path)
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        file_path.write_bytes(data)
+        return file_path
 
     def file_exists(self, path: str) -> bool:
         """Pārbauda, vai fails eksistē.
@@ -43,7 +57,10 @@ class FileService:
             `True`, ja fails eksistē, pretējā gadījumā `False`.
         """
 
-        raise NotImplementedError("Faila esamības pārbaude vēl nav izveidota.")
+        if not path.strip():
+            return False
+
+        return Path(path).is_file()
 
     def is_file_readable(self, path: str) -> bool:
         """Pārbauda, vai fails ir nolasāms.
@@ -55,7 +72,10 @@ class FileService:
             `True`, ja failu var nolasīt, pretējā gadījumā `False`.
         """
 
-        raise NotImplementedError("Lasīšanas tiesību pārbaude vēl nav izveidota.")
+        if not self.file_exists(path):
+            return False
+
+        return os.access(path, os.R_OK)
 
     def is_file_writable(self, path: str) -> bool:
         """Pārbauda, vai failu var pārrakstīt vai izveidot.
@@ -67,7 +87,14 @@ class FileService:
             `True`, ja failu var ierakstīt, pretējā gadījumā `False`.
         """
 
-        raise NotImplementedError("Rakstīšanas tiesību pārbaude vēl nav izveidota.")
+        if not path.strip():
+            return False
+
+        file_path = Path(path)
+        if file_path.exists():
+            return os.access(file_path, os.W_OK)
+
+        return file_path.parent.exists() and os.access(file_path.parent, os.W_OK)
 
     def build_encrypted_file_path(self, original_path: str) -> str:
         """Izveido gala ceļu šifrētam failam.
@@ -79,7 +106,10 @@ class FileService:
             Jaunais ceļš šifrētajam failam.
         """
 
-        raise NotImplementedError("Šifrētā faila ceļa veidošana vēl nav izveidota.")
+        if not original_path.strip():
+            raise ValueError("Sākotnējais ceļš nedrīkst būt tukšs.")
+
+        return str(Path(original_path).with_suffix(".encrypted"))
 
     def build_decrypted_file_path(self, original_path: str) -> str:
         """Izveido gala ceļu atšifrētam failam.
@@ -91,7 +121,10 @@ class FileService:
             Jaunais ceļš atšifrētajam failam.
         """
 
-        raise NotImplementedError("Atšifrētā faila ceļa veidošana vēl nav izveidota.")
+        if not original_path.strip():
+            raise ValueError("Sākotnējais ceļš nedrīkst būt tukšs.")
+
+        return str(Path(original_path).with_suffix(".decrypted"))
 
     def get_file_size(self, path: str) -> int:
         """Atgriež faila izmēru baitos.
@@ -103,7 +136,14 @@ class FileService:
             Faila izmērs baitos.
         """
 
-        raise NotImplementedError("Faila izmēra noteikšana vēl nav izveidota.")
+        if not path.strip():
+            raise ValueError("Faila ceļš nedrīkst būt tukšs.")
+
+        file_path = Path(path)
+        if not file_path.is_file():
+            raise FileNotFoundError("Fails nav atrasts.")
+
+        return file_path.stat().st_size
 
     def safe_overwrite_check(self, path: str) -> bool:
         """Pārbauda, vai gala failu drīkst droši pārrakstīt.
@@ -115,4 +155,7 @@ class FileService:
             `True`, ja pārrakstīšana ir atļauta, pretējā gadījumā `False`.
         """
 
-        raise NotImplementedError("Pārrakstīšanas pārbaude vēl nav izveidota.")
+        if not path.strip():
+            return False
+
+        return not Path(path).exists()
