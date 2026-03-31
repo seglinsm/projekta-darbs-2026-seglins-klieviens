@@ -1,6 +1,6 @@
 # Failu drosibas lietotne
 
-Šī ir vienkārša lokāla Python lietotne failu šifrēšanai un atšifrēšanai. Tā darbojas uz datora bez servera un izmanto Tkinter logu kopā ar `cryptography.Fernet`.
+centāmies panākt vienkāršu Python lietotni failu šifrēšanai un atšifrēšanai. Tā darbojas uz datora bez servera un izmanto Tkinter logu kopā ar `cryptography.Fernet`.
 
 ## Ko lietotne dara
 
