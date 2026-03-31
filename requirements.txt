@@ -1,2 +1,3 @@
+## nepieciešamās 3rd party GUI . Izmantojām minimālu daudzumu, lai saglabātu vienkārsību.
 cryptography
 pytest
