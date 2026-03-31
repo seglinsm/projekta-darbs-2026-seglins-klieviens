@@ -1,19 +1,16 @@
 # Failu drosibas lietotne
 
-centāmies panākt vienkāršu Python lietotni failu šifrēšanai un atšifrēšanai. Tā darbojas uz datora bez servera un izmanto Tkinter logu kopā ar `cryptography.Fernet`.
+centāmies panākt vienkāršu Python lietotni failu šifrēšanai un atšifrēšanai. Tā darbojas uz datora bez servera (lokāli) un izmanto Tkinter logu kopā ar `cryptography.Fernet`.
 
 ## Ko lietotne dara
 
 - ļauj izvēlēties vienu failu
 - ļauj ģenerēt jaunu atslēgu vai ielādēt jau saglabātu atslēgas failu
-- ļauj saglabāt atslēgu `.key` vai `.txt` failā
 - šifrē failu un izveido, piemēram, `dokuments.txt.encrypted`
 - atšifrē failu un izveido, piemēram, `dokuments.decrypted.txt`
-- pirms pārraksta esošu gala failu, paprasa apstiprinājumu
-
 ## Ko lietotne nedara
 
-- nestrādā ar vairākiem failiem reizē
+- nestrādā ar vairākiem failiem reizē (!)
 - nešifrē mapes (es domāju ka līdz ceturtdienai jeb prezentēšanai nepagūšu uztaisīt)
 - neizmanto serveri, datubāzi vai mākoņpakalpojumu
 - nav paroles režīma vai lietotāju sistēmas
