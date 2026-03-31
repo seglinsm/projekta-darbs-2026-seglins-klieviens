@@ -1,8 +1,8 @@
 # Manuala testeesana 
 
-## Pirms sāc
+## Pirms sāc;
 
-Sagatavo dažus mazus failus:
+Sagatavo dazus mazus failus:
 
 - vienu `.txt` failu
 - vienu `.pdf` failu
